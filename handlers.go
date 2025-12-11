@@ -53,11 +53,19 @@ func getAllData(c *gin.Context) {
 
 func getDataByKey(c *gin.Context) {
 	packageID := c.Query("id")
+    hl := c.Query("hl")
+    gl := c.Query("gl")
 	if packageID == "" {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "package id is mandatory"})
 		return
 	}
-	resBody, statusCode := fetchHTML(packageID)
+    if hl == "" {
+        hl = "en"
+    }
+    if gl == "" {
+        gl = "US"
+    }
+	resBody, statusCode := fetchHTML(packageID, hl, gl)
 	if statusCode == http.StatusNotFound {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "package id is invalid"})
 		return
