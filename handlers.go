@@ -20,12 +20,20 @@ func getREADME(c *gin.Context) {
 
 func getAllData(c *gin.Context) {
 	packageID := c.Query("id")
+	hl := c.Query("hl")
+    gl := c.Query("gl")
 	if packageID == "" {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "package id is mandatory"})
 		return
 	}
+	if hl == "" {
+		hl = "en"
+	}
+    if gl == "" {
+        gl = "US"
+    }
 
-	resBody, statusCode := fetchHTML(packageID)
+	resBody, statusCode := fetchHTML(packageID, hl, gl)
 	if statusCode == http.StatusNotFound {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "package id is invalid"})
 		return

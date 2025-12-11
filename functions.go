@@ -15,7 +15,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func fetchHTML(packageID string) (string, int) {
+func fetchHTML(packageID, hl, gl string) (string, int) {
 	cachedHTML, err := rdb.Get(ctx, packageID).Result()
 	if err == nil {
 		return cachedHTML, http.StatusOK
@@ -24,7 +24,7 @@ func fetchHTML(packageID string) (string, int) {
 		return "", http.StatusInternalServerError
 	}
 
-	playstoreURL := fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID)
+	playstoreURL := fmt.Sprintf("https://play.google.com/store/apps/details?id=%s&hl=%s&gl=%s", packageID, hl, gl)
 	res, err := http.Get(playstoreURL)
 	if err != nil {
 		log.Printf("error requesting playstore URL for id = %s, err = %s\n", packageID, err.Error())
